@@ -1,0 +1,122 @@
+{
+	"_type": "export",
+	"__export_format": 4,
+	"__export_date": "2025-05-16T00:00:00.000Z",
+	"__export_source": "insomnia.desktop.app:v2023.5.8",
+	"resources": [
+		{
+			"_id": "env_env_eduai",
+			"_type": "environment",
+			"name": "Base Environment",
+			"data": {
+				"base_url": "{{BASE_URL}}"
+			}
+		},
+		{
+			"_id": "wrk_eduai",
+			"_type": "workspace",
+			"name": "EduAI Flask API",
+			"description": ""
+		},
+		{
+			"_id": "req_register",
+			"_type": "request",
+			"parentId": "wrk_eduai",
+			"name": "🔐 Register",
+			"method": "POST",
+			"url": "{{ base_url }}/register",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n  \"username\": \"teacher1\",\n  \"password\": \"pass123\",\n  \"role\": \"professor\"\n}"
+			}
+		},
+		{
+			"_id": "req_login",
+			"_type": "request",
+			"parentId": "wrk_eduai",
+			"name": "🔐 Login",
+			"method": "POST",
+			"url": "{{ base_url }}/login",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n  \"username\": \"teacher1\",\n  \"password\": \"pass123\"\n}"
+			}
+		},
+		{
+			"_id": "req_me",
+			"_type": "request",
+			"parentId": "wrk_eduai",
+			"name": "🙋‍♂️ Current User",
+			"method": "GET",
+			"url": "{{ base_url }}/me"
+		},
+		{
+			"_id": "req_logout",
+			"_type": "request",
+			"parentId": "wrk_eduai",
+			"name": "🔓 Logout",
+			"method": "POST",
+			"url": "{{ base_url }}/logout"
+		},
+		{
+			"_id": "req_create_class",
+			"_type": "request",
+			"parentId": "wrk_eduai",
+			"name": "🏫 Create Classroom",
+			"method": "POST",
+			"url": "{{ base_url }}/classrooms",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n  \"name\": \"10th Grade AI\",\n  \"professor_id\": 1\n}"
+			}
+		},
+		{
+			"_id": "req_add_program",
+			"_type": "request",
+			"parentId": "wrk_eduai",
+			"name": "📘 Add Program",
+			"method": "POST",
+			"url": "{{ base_url }}/programs",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n  \"title\": \"FizzBuzz\",\n  \"description\": \"Basic loop task\",\n  \"code\": \"for i in range(1, 101): print(i)\",\n  \"class_id\": 1\n}"
+			}
+		},
+		{
+			"_id": "req_add_summary",
+			"_type": "request",
+			"parentId": "wrk_eduai",
+			"name": "🧠 Add Program Summary",
+			"method": "POST",
+			"url": "{{ base_url }}/programs/1/summaries",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n  \"language\": \"en\",\n  \"summary\": \"This prints numbers 1 to 100.\",\n  \"test_cases\": \"{\\\"input\\\": [], \\\"output\\\": [1,2,...]}\",\n  \"audio_link\": \"https://example.com/audio.mp3\"\n}"
+			}
+		},
+		{
+			"_id": "req_submit_solution",
+			"_type": "request",
+			"parentId": "wrk_eduai",
+			"name": "📤 Submit Solution",
+			"method": "POST",
+			"url": "{{ base_url }}/submissions",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n  \"program_id\": 1,\n  \"code\": \"for i in range(1, 101): print(i)\",\n  \"has_error\": false,\n  \"feedback\": \"Looks good.\"\n}"
+			}
+		},
+		{
+			"_id": "req_submit_quiz",
+			"_type": "request",
+			"parentId": "wrk_eduai",
+			"name": "📊 Submit Quiz Mark",
+			"method": "POST",
+			"url": "{{ base_url }}/quiz/mark",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n  \"program_id\": 1,\n  \"marks\": 95\n}"
+			}
+		}
+	]
+}

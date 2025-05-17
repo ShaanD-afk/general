@@ -1,0 +1,10 @@
+bin
+lib
+include
+pyvenv.cfg
+**/*.DS_Store
+**/__pycache__
+media
+temp
+.env
+yoyo.ini
