@@ -92,11 +92,16 @@ def quiz_by_program_user(program_id, user_id):
     return jsonify(quiz)
 
 
-# View quiz by program and user id
+# View quiz by user id, joining programs table
 @quiz_bp.route("/quiz/user/<int:user_id>", methods=["GET"])
 def quiz_by_user(user_id):
     quiz = query_db(
-        "SELECT * FROM quizzes WHERE student_id = %s",
+        """
+        SELECT quizzes.*, programs.title AS program_name
+        FROM quizzes
+        JOIN programs ON quizzes.program_id = programs.id
+        WHERE quizzes.student_id = %s
+        """,
         (user_id,),
         one=True,
     )
