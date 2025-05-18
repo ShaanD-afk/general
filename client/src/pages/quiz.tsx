@@ -44,7 +44,12 @@ export default function QuizPage() {
 
 	const handleSubmit = async () => {
 		setSubmitting(true)
-		const res = await markQuizAnswers({ quiz_id: quiz.id, answers })
+		const res = await markQuizAnswers({
+			quiz_id: quiz.id,
+			answers: Object.fromEntries(
+				Object.entries(answers).map(([k, v]) => [`${k}`, v.charAt(0)])
+			),
+		})
 		setSubmitting(false)
 		setSubmitted(true)
 		if (res && res.data) {

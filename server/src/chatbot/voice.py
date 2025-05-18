@@ -15,6 +15,13 @@ languages = {
     "de": "German",
 }
 
+voices = {
+    "en": "en-IN-NeerjaNeural",
+    "ka": "kn-IN-SapnaNeural",
+    "fr": "fr-FR-RemyMultilingualNeural",
+    "de": "de-DE-SeraphinaMultilingualNeural",
+}
+
 
 def chatbot_speech_helper(
     audio_file_path: str = None,
@@ -90,7 +97,7 @@ def chatbot_speech_helper(
         subscription=speech_key, region=service_region
     )
     speech_config.speech_synthesis_voice_name = (
-        "kn-IN-SapnaNeural" if language == "Kannada" else "en-IN-NeerjaNeural"
+        voices[language] if language in voices else "en-IN-NeerjaNeural"
     )
     speech_config.set_speech_synthesis_output_format(
         speechsdk.SpeechSynthesisOutputFormat.Audio16Khz32KBitRateMonoMp3

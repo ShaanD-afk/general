@@ -190,7 +190,7 @@ export default function ProgramPage() {
 										<p className="text-sm">Output: {result.stdout}</p>
 										<p className="text-sm">Error: {result.stderr}</p>
 										<p className="text-sm">
-											Compile Output: {result.compile_output}
+											Compiler Warnings/Error: {result.compile_output}
 										</p>
 									</div>
 								))}
@@ -230,7 +230,7 @@ export default function ProgramPage() {
 												.map((quiz) => (
 													<tr key={quiz.id}>
 														<td className="px-4 py-2 border-b">
-															{quiz.student_id}
+															{quiz.username ?? quiz.student_id}
 														</td>
 														<td className="px-4 py-2 border-b">{quiz.marks}</td>
 													</tr>

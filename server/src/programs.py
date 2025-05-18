@@ -23,7 +23,140 @@ def programs_by_class(class_id):
     return jsonify(query_db("SELECT * FROM programs WHERE class_id = %s", (class_id,)))
 
 
-default_languages = {"en": "English", "ka": "Kannada"}
+def generate_and_save_summaries(program_id: int, code: str):
+    """
+    Generates summaries and audio for all supported languages and saves them to the DB.
+    Removes old summaries first.
+    """
+
+    languages = [
+        {
+            "key": "en",
+            "language": "English",
+            "summary_field": "explanation",
+            "algorithm_field": "english_algorithm",
+            "voice": "en-IN-NeerjaNeural",
+        },
+        {
+            "key": "ka",
+            "language": "Kannada",
+            "summary_field": "translation",
+            "algorithm_field": "kannada_algorithm",
+            "voice": "kn-IN-SapnaNeural",
+        },
+        {
+            "key": "fr",
+            "language": "French",
+            "summary_field": "french_translation",
+            "algorithm_field": "french_algorithm",
+            "voice": "fr-FR-RemyMultilingualNeural",
+        },
+        {
+            "key": "de",
+            "language": "German",
+            "summary_field": "german_translation",
+            "algorithm_field": "german_algorithm",
+            "voice": "de-DE-SeraphinaMultilingualNeural",
+        },
+    ]
+
+    # Remove old summaries
+    query_db(
+        "DELETE FROM summaries WHERE program_id = %s RETURNING program_id",
+        (program_id,),
+        commit=True,
+    )
+
+    for language in languages:
+        # Generate summaries and audio for each language
+        summary_json = (
+            summarize_code(code, language=language["language"])
+            .replace("```json", "")
+            .replace("```", "")
+            .strip()
+        )
+
+        if summary_json is None:
+            raise Exception("Failed to generate summary")
+
+        print(summary_json)
+
+        summary = json.loads(summary_json)
+        summary_text = summary["translation"]
+        algorithm_text = summary["algorithm"]
+
+        audio_path = synthesize_speech_to_unique_mp3(
+            summary_text,
+            output_folder="media",
+            voice=language["voice"],
+        )
+
+        # Save the summary and audio to the database
+        query_db(
+            "INSERT INTO summaries (program_id, summary, audio_link, language, algorithm) VALUES (%s, %s, %s, %s, %s) RETURNING program_id",
+            (program_id, summary_text, audio_path, language["key"], algorithm_text),
+            commit=True,
+        )
+
+    # # Generate new summaries
+    # summary_json = (
+    #     summarize_code(code).replace("```json", "").replace("```", "").strip()
+    # )
+
+    # if summary_json is None:
+    #     raise Exception("Failed to generate summary")
+
+    # print(summary_json)
+
+    # summary = json.loads(summary_json)
+    # english_summary = summary["explanation"]
+    # kannada_summary = summary["translation"]
+    # french_summary = summary["french_translation"]
+    # german_summary = summary["german_translation"]
+    # english_algorithm = summary["english_algorithm"]
+    # kannada_algorithm = summary["kannada_algorithm"]
+    # french_algorithm = summary["french_algorithm"]
+    # german_algorithm = summary["german_algorithm"]
+
+    # english_audio_path = synthesize_speech_to_unique_mp3(
+    #     english_summary,
+    #     output_folder="media",
+    # )
+
+    # kannada_audio_path = synthesize_speech_to_unique_mp3(
+    #     kannada_summary,
+    #     output_folder="media",
+    # )
+
+    # french_audio_path = synthesize_speech_to_unique_mp3(
+    #     french_summary, output_folder="media", voice="fr-FR-RemyMultilingualNeural"
+    # )
+
+    # german_audio_path = synthesize_speech_to_unique_mp3(
+    #     german_summary, output_folder="media", voice="de-DE-SeraphinaMultilingualNeural"
+    # )
+
+    # # Save all summaries
+    # query_db(
+    #     "INSERT INTO summaries (program_id, summary, audio_link, language, algorithm) VALUES (%s, %s, %s, %s, %s)",
+    #     (program_id, english_summary, english_audio_path, "en", english_algorithm),
+    #     commit=True,
+    # )
+    # query_db(
+    #     "INSERT INTO summaries (program_id, summary, audio_link, language, algorithm) VALUES (%s, %s, %s, %s, %s)",
+    #     (program_id, kannada_summary, kannada_audio_path, "ka", kannada_algorithm),
+    #     commit=True,
+    # )
+    # query_db(
+    #     "INSERT INTO summaries (program_id, summary, audio_link, language, algorithm) VALUES (%s, %s, %s, %s, %s)",
+    #     (program_id, french_summary, french_audio_path, "fr", french_algorithm),
+    #     commit=True,
+    # )
+    # query_db(
+    #     "INSERT INTO summaries (program_id, summary, audio_link, language, algorithm) VALUES (%s, %s, %s, %s, %s)",
+    #     (program_id, german_summary, german_audio_path, "de", german_algorithm),
+    #     commit=True,
+    # )
 
 
 @programs_bp.route("/programs", methods=["POST"])
@@ -38,52 +171,27 @@ def create_program():
 
     id = row["id"]
 
-    # Create a summary for the new program
-    summary_json = (
-        summarize_code(
-            data["code"],
-            language="Kannada",
-        )
-        .replace("```json", "")
-        .replace("```", "")
-        .strip()
-    )
-
-    print(summary_json)
-
-    if summary_json is None:
-        return jsonify({"error": "Failed to generate summary"}), 500
-
-    summary = json.loads(summary_json)
-    english_summary = summary["explanation"]
-    kannada_summary = summary["translation"]
-    english_algorithm = summary["english_algorithm"]
-    kannada_algorithm = summary["kannada_algorithm"]
-    formulas = summary["formulas"]
-
-    english_audio_path = synthesize_speech_to_unique_mp3(
-        english_summary,
-        output_folder="media",
-    )
-
-    kannada_audio_path = synthesize_speech_to_unique_mp3(
-        kannada_summary,
-        output_folder="media",
-    )
-
-    query_db(
-        "INSERT INTO summaries (program_id, summary, audio_link, language, algorithm) VALUES (%s, %s, %s, %s, %s) RETURNING program_id",
-        (id, english_summary, english_audio_path, "en", english_algorithm),
-        commit=True,
-    )
-
-    query_db(
-        "INSERT INTO summaries (program_id, summary, audio_link, language, algorithm) VALUES (%s, %s, %s, %s, %s) RETURNING program_id",
-        (id, kannada_summary, kannada_audio_path, "ka", kannada_algorithm),
-        commit=True,
-    )
+    try:
+        generate_and_save_summaries(id, data["code"])
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
     return jsonify({"id": id})
+
+
+@programs_bp.route("/programs/<int:id>/regenerate_summaries", methods=["POST"])
+def regenerate_summaries(id):
+    # Get the program code
+    prog = query_db("SELECT code FROM programs WHERE id = %s", (id,), one=True)
+    if not prog:
+        return jsonify({"error": "Program not found"}), 404
+
+    try:
+        generate_and_save_summaries(id, prog["code"])
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+    return jsonify({"status": "summaries regenerated", "program_id": id})
 
 
 @programs_bp.route("/programs/<int:id>", methods=["DELETE"])

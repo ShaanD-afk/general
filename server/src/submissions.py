@@ -22,6 +22,14 @@ def user_submissions(uid):
     return jsonify(query_db("SELECT * FROM submissions WHERE student_id = %s", (uid,)))
 
 
+languages = {
+    "en": "English",
+    "ka": "Kannada",
+    "fr": "French",
+    "de": "German",
+}
+
+
 @submissions_bp.route("/submissions", methods=["POST"])
 def submit_code():
     data = request.json
@@ -37,7 +45,7 @@ def submit_code():
     quiz_res = generate_quiz(
         data["code"],
         actual_code=actual_code,
-        language=data.get("quiz_language", "Kannada"),
+        language=languages[data.get("quiz_language", "en")],
     )
     print(quiz_res)
     quiz_json = json.loads(quiz_res)

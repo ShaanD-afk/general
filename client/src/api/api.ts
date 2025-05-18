@@ -2,7 +2,7 @@
 import axios from "axios"
 
 export const API_URL =
-	import.meta.env.VITE_API_URL || "http://100.107.65.96:5051/"
+	import.meta.env.VITE_API_URL || "https://server.eduai.ranjithrd.in"
 
 export const API = axios.create({
 	baseURL: API_URL,

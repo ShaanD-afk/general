@@ -15,6 +15,8 @@ export default function SelectLanguage({
 			>
 				<option value="ka">Kannada</option>
 				<option value="en">English</option>
+				<option value="fr">French</option>
+				<option value="de">German</option>
 			</select>
 		</div>
 	)

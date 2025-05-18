@@ -14,23 +14,17 @@ client = openai.OpenAI(api_key=os.getenv("CHATGPT_API_KEY"))
 
 def summarize_code(code: str, language: str = "Kannada") -> str:
     prompt = f"""
-{code} for this code, give me a detailed paragraph explanation without highlighting any keywords and translate to very very simple spoken {language} while maintaining context and meaning. Give a flowchart in {language} with formulas in JSON format specifically:
+{code} for this code, give me a detailed paragraph explanation without highlighting any keywords and translate to very very simple spoken {language} while maintaining context and meaning. Give a flowchart in {language} with formulas in JSON format specifically, without translating the JSON keys and keeping them as is:
+The JSON KEYS MUST REMAIN IN ENGLISH ("explanation", "translation", "algorithm").
 
 {"{"}
   "explanation": "Detailed paragraph explanation of the given code in the user's preferred language without highlighting keywords. It should describe the code logic clearly and simply, maintaining context and meaning.",
-
   "translation": "Translated version of the explanation in simple {language} (or specified language), keeping context and meaning intact. Words directly transliterated from English to {language} are enclosed in double quotes.",
-
-  "english_algorithm": "In English, explain how the program works in a detailed manner easy to reproduce, but not too verbose. Use simple words and sentences. Explain each step in the algorithm so we are sure to be thorough, while not revealing the entire code. In bullet points, separated by \\\\n.",
-  "kannada_algorithm": "In Kannada, explain how the program works in a detailed manner easy to reproduce, but not too verbose. Use simple words and sentences. Explain each step in the algorithm so we are sure to be thorough, while not revealing the entire code. In bullet points, separated by \\\\n.",
-
-  "formulas": {"{"}
-    "example_formula_1": "Relevant formula or expression related to code",
-    "example_formula_2": "Another formula or concept (e.g., time complexity)",
-    "example_formula_3": "Additional relevant formula or operation"
-  {"}"}
+  "algorithm": "In {language}, explain how the program works in a detailed manner easy to reproduce, but not too verbose. Use simple words and sentences. Explain each step in the algorithm so we are sure to be thorough, while not revealing the entire code. In bullet points, separated by \\\\n.",
 {"}"}
 """
+
+    print(prompt)
     response = client.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=[{"role": "user", "content": prompt}],
@@ -87,8 +81,8 @@ def generate_quiz(code: str, actual_code: str = "", language: str = "Kannada") -
       ],
     }}],
   "answer_key": {{
-    "0": "Correct option letter",
-    "1": "Correct option letter"
+    "0": "Correct option letter (just A or B or C)",
+    "1": "Correct option letter (just A or B or C)"
   }},
   "test_inputs": [
     "stdin input to the user generated code in this format separated by \\\\n",
@@ -104,7 +98,9 @@ def generate_quiz(code: str, actual_code: str = "", language: str = "Kannada") -
     return response.choices[0].message.content.strip()
 
 
-def synthesize_speech_to_unique_mp3(text: str, output_folder: str = "media") -> str:
+def synthesize_speech_to_unique_mp3(
+    text: str, voice="kn-IN-SapnaNeural", output_folder: str = "media"
+) -> str:
     """
     Synthesizes speech from the provided text and saves it as a uniquely named MP3 file in the specified folder.
 
@@ -130,7 +126,7 @@ def synthesize_speech_to_unique_mp3(text: str, output_folder: str = "media") -> 
     speech_config = speechsdk.SpeechConfig(
         subscription=speech_key, region=service_region
     )
-    speech_config.speech_synthesis_voice_name = "kn-IN-SapnaNeural"
+    speech_config.speech_synthesis_voice_name = voice
     speech_config.set_speech_synthesis_output_format(
         speechsdk.SpeechSynthesisOutputFormat.Audio16Khz32KBitRateMonoMp3
     )
