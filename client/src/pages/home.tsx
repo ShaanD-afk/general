@@ -37,7 +37,10 @@ export default function HomePage() {
 
 	return (
 		<div className="flex flex-col gap-4 p-4">
-			<h1 className="text-xl font-bold">Welcome, {user?.username}</h1>
+			<div className="flex flex-row w-full justify-between items-center mb-4 mt-2">
+				<h1 className="text-xl font-bold">Welcome, {user?.username}</h1>
+				<Link href="/quizzes">View quiz history</Link>
+			</div>
 			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
 				{programs?.map((program) => (
 					<Link key={program.id} href={`/program/${program.id}`}>

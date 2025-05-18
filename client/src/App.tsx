@@ -6,6 +6,7 @@ import Header from "./components/header"
 import NewProgramPage from "./pages/newProgram"
 import ProgramPage from "./pages/program"
 import QuizPage from "./pages/quiz"
+import QuizzesPage from "./pages/quizzes"
 
 function App() {
 	const [location] = useLocation()
@@ -20,6 +21,7 @@ function App() {
 				<Route path="/program/new" component={NewProgramPage} />
 				<Route path="/program/:id" component={ProgramPage} />
 				<Route path="/program/:programId/quiz" component={QuizPage} />
+				<Route path="/quizzes" component={QuizzesPage} />
 			</Switch>
 		</main>
 	)
