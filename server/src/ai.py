@@ -62,22 +62,22 @@ def generate_quiz(code: str, actual_code: str = "", language: str = "Kannada") -
 
        If any, clearly state them irrespective of whether they are syntactical or logical. Then generate a 10 multiple choice question quiz focusing 6 of them on the part with error. If no error then generate any 10 interesting MCQs on that topic while limiting time complexity question to 1. Give the answer key separately at the end. 
        For the code to be correct, IT MUST ACHIEVE WHAT THE PROVIDED ACTUAL CODE DOES.
-       Print everything in {language} in JSON format, specifically 
+       Print everything in {language} in JSON format, WITH JSON KEYS IN ENGLISH! specifically 
   {{
   "code_errors": [{{
 
-      "error_type": "error type description",
-      "description": "detailed explanation of the error",
-      "incorrect_code": "snippet of wrong code",
-      "correct_code": "corrected code snippet"
+      "error_type": "error type description in {language}",
+      "description": "detailed explanation of the error in {language}",
+      "incorrect_code": "snippet of wrong code in {language}",
+      "correct_code": "corrected code snippet in {language}"
     }}]
   ,
   "code_correct": true | false depending on whether the code matches closely the output of the actual code & free from syntax, logical, semantical errors,
   "quiz": [{{
     
-      "question": "Question text in {language}",
+      "question": "Question text in {language}!",
       "options": [
-        "A) option one",
+        "A) option one, options in {language}!",
         "B) option two",
         "C) option three",
         "D) option four"
@@ -92,6 +92,8 @@ def generate_quiz(code: str, actual_code: str = "", language: str = "Kannada") -
     "generate 3 of these inputs, all of which must be appropriate and test the code for success"
   ]
   }}
+
+  JSON KEYS MUST BE IN ENGLISH, WHILE VALUES IN {language}!
     """
     response = client.chat.completions.create(
         model="gpt-3.5-turbo",
