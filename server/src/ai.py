@@ -22,6 +22,9 @@ The JSON KEYS MUST REMAIN IN ENGLISH ("explanation", "translation", "algorithm")
   "translation": "Translated version of the explanation in simple {language} (or specified language), keeping context and meaning intact. Words directly transliterated from English to {language} are enclosed in double quotes.",
   "algorithm": "In {language}, explain how the program works in a detailed manner easy to reproduce, but not too verbose. Use simple words and sentences. Explain each step in the algorithm so we are sure to be thorough, while not revealing the entire code. In bullet points, separated by \\\\n.",
 {"}"}
+
+Once generated, please change the JSON keys so they are in English (explanation, translation, algorithm) and keep the values in {language}.
+Please ensure that the JSON is valid and keys are in English.
 """
 
     print(prompt)
