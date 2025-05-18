@@ -45,6 +45,7 @@ export interface Quiz {
 	}[]
 	answers: { [key: string]: string }
 	marks: number
+	username?: string
 }
 
 export interface MarkQuizInput {
