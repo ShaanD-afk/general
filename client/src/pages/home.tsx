@@ -11,7 +11,9 @@ export default function HomePage() {
 	if (user?.role === "professor") {
 		return (
 			<div className="flex flex-col gap-4 p-4">
-				<h1 className="text-xl font-bold">Welcome, {user.username}</h1>
+				<h1 className="text-2xl">
+					Welcome, <b>{user.username}</b>
+				</h1>
 				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
 					{programs?.map((program) => (
 						<Link key={program.id} href={`/program/${program.id}`}>

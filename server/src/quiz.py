@@ -90,3 +90,16 @@ def quiz_by_program_user(program_id, user_id):
     if not quiz:
         return jsonify({"error": "Quiz not found"}), 404
     return jsonify(quiz)
+
+
+# View quiz by program and user id
+@quiz_bp.route("/quiz/user/<int:user_id>", methods=["GET"])
+def quiz_by_user(user_id):
+    quiz = query_db(
+        "SELECT * FROM quizzes WHERE student_id = %s",
+        (user_id,),
+        one=True,
+    )
+    if not quiz:
+        return jsonify({"error": "Quiz not found"}), 404
+    return jsonify(quiz)

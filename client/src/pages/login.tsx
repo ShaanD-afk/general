@@ -31,7 +31,10 @@ export default function LoginPage() {
 	}
 
 	return (
-		<div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
+		<div className="flex flex-col items-center justify-around min-h-screen bg-gray-50">
+			<h2 className="text-3xl font-bold">
+				<span className="text-blue-700">Bhasha</span>Code
+			</h2>
 			<form
 				onSubmit={handleSubmit}
 				className="bg-white p-8 rounded-sm shadow-sm w-full max-w-sm flex flex-col gap-4"
@@ -69,6 +72,12 @@ export default function LoginPage() {
 					<div className="text-red-500 text-sm text-center">{error}</div>
 				)}
 			</form>
+			<div className="flex flex-col gap-2 text-center">
+				<p>
+					Built by <b>Hackstreet Boys</b>
+				</p>
+				<p>Team 30 | EduAI Hackathon</p>
+			</div>
 		</div>
 	)
 }
