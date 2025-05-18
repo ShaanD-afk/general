@@ -97,10 +97,19 @@ def quiz_by_program_user(program_id, user_id):
 def quiz_by_user(user_id):
     quiz = query_db(
         """
-        SELECT quizzes.*, programs.title AS program_name
-        FROM quizzes
-        JOIN programs ON quizzes.program_id = programs.id
-        WHERE quizzes.student_id = %s
+        SELECT
+            quizzes.*,
+            programs.title AS program_name
+        FROM
+            quizzes
+        JOIN
+            programs
+            ON quizzes.program_id = programs.id
+        WHERE
+            quizzes.student_id = %s
+            AND quizzes.marks IS NOT NULL
+        ORDER BY
+            quizzes.marks DESC;
         """,
         (user_id,),
         one=False,
