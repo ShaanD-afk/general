@@ -38,6 +38,7 @@ export interface Quiz {
 	id: number
 	student_id: number
 	program_id: number
+	program_name?: string
 	class_id?: number
 	questions: {
 		question: string
@@ -89,6 +90,14 @@ export function useQuizzesByProgram(
 ) {
 	return useSWR<Quiz[]>(
 		programId && role === "professor" ? `/quiz/program/${programId}` : null,
+		fetcher
+	)
+}
+
+// Get quizzes by user
+export function useQuizzesByUser(userId?: number) {
+	return useSWR<Quiz[]>(
+		userId && userId > 0 ? `/quiz/user/${userId}` : null,
 		fetcher
 	)
 }

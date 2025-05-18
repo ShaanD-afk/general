@@ -103,7 +103,7 @@ def quiz_by_user(user_id):
         WHERE quizzes.student_id = %s
         """,
         (user_id,),
-        one=True,
+        one=False,
     )
     if not quiz:
         return jsonify({"error": "Quiz not found"}), 404
